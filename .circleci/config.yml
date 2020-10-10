@@ -35,12 +35,6 @@ jobs:
       - run:
           name: テストの実行
           command: ./gradlew lint test
-      - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
-          path: app/build/reports
-          destination: reports
-      - store_test_results: # アーティファクト (https://circleci.com/ja/docs/2.0/artifacts/) に表示されるようにします
-          path: app/build/test-results
-      # テスト サマリー (https://circleci.com/ja/docs/2.0/collect-test-data/) に表示されるようにします
       - run:
           name: デバッグ APK とリリース APK のビルド
           command: |
@@ -76,5 +70,11 @@ jobs:
                 sudo mkdir ~/firebase
 #                sudo gsutil -m cp -r -U `sudo gsutil ls gs://[BUCKET_NAME]/[OBJECT_NAME] | tail -1` ${CIRCLE_ARTIFACTS}/ | true
                          sudo gsutil -m cp -r -U `sudo gsutil ls gs://cloud-test-circleci-test-10cf8 | tail -1` ~/firebase/ | true
-           - store_artifacts:
-               path: ~/firebase/
+#           - store_artifacts:
+#               path: ~/firebase/
+      - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
+          path: app/build/reports
+          destination: reports
+      - store_test_results: # アーティファクト (https://circleci.com/ja/docs/2.0/artifacts/) に表示されるようにします
+          path: app/build/test-results
+      # テスト サマリー (https://circleci.com/ja/docs/2.0/collect-test-data/) に表示されるようにします
