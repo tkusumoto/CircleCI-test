@@ -40,34 +40,34 @@ jobs:
           command: |
             ./gradlew :app:assembleDebug
             ./gradlew :app:assembleDebugAndroidTest
-          - run:
-              name: Google サービス アカウントの保存
+      - run:
+          name: Google サービス アカウントの保存
 #              command: echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > ${HOME}/gcloud-service-key.json
-              command: echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > gcloud-service-key.json
-          - run:
-              name: gcloud の承認とデフォルト プロジェクトの設定
-              command: |
+          command: echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > gcloud-service-key.json
+      - run:
+          name: gcloud の承認とデフォルト プロジェクトの設定
+          command: |
 #                sudo gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-                sudo gcloud auth activate-service-account --key-file=gcloud-service-key.json
-                sudo gcloud --quiet config set project circleci-test-10cf8
-          - run:
-              name: Firebase Test Lab でのテスト
-              command: >
-                sudo gcloud firebase test android run \
-                  --type instrumentation \
+            sudo gcloud auth activate-service-account --key-file=gcloud-service-key.json
+            sudo gcloud --quiet config set project circleci-test-10cf8
+      - run:
+          name: Firebase Test Lab でのテスト
+          command: >
+            sudo gcloud firebase test android run \
+              --type instrumentation \
 #                  --app <local_server_path>/<app_apk>.apk \
 #                  --test <local_server_path>/<app_test_apk>.apk \
-                  --app ./app/build/outputs/apk/debug/app-debug.apk \
-                  --test ./app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
-                  --results-bucket cloud-test-circleci-test-10cf8
-                  --device model=Nexus6,version=21,locale=ja,orientation=portrait \
-                  --timeout 10m \
-                  --use-orchestrator
-          - run:
-              name: gsutil 依存関係のインストールとテスト結果データのコピー
-              command: |1
-                sudo pip install -U crcmod
-                sudo mkdir ~/firebase
+              --app ./app/build/outputs/apk/debug/app-debug.apk \
+              --test ./app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
+              --results-bucket cloud-test-circleci-test-10cf8
+              --device model=Nexus6,version=21,locale=ja,orientation=portrait \
+              --timeout 10m \
+              --use-orchestrator
+      - run:
+          name: gsutil 依存関係のインストールとテスト結果データのコピー
+          command: |1
+            sudo pip install -U crcmod
+            sudo mkdir ~/firebase
 #                sudo gsutil -m cp -r -U `sudo gsutil ls gs://[BUCKET_NAME]/[OBJECT_NAME] | tail -1` ${CIRCLE_ARTIFACTS}/ | true
                          sudo gsutil -m cp -r -U `sudo gsutil ls gs://cloud-test-circleci-test-10cf8 | tail -1` ~/firebase/ | true
 #           - store_artifacts:
